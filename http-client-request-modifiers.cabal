@@ -1,0 +1,36 @@
+name:                   http-client-request-modifiers
+version:                0.1
+synopsis:               Convenient monadic HTTP request modifiers
+description:
+  These are simple, monadic functions that modify an HTTP @Request@ from
+  @http-client@. They make it easy to chain request updates and allow for
+  arbitrary monadic effects.
+license:                BSD3
+license-file:           LICENSE
+author:                 Sean Leather
+maintainer:             sean.leather@gmail.com
+category:               Network
+build-type:             Simple
+cabal-version:          >= 1.10
+
+flag network-uri
+   description: Get Network.URI from the network-uri package
+   default: True
+
+library
+  hs-source-dirs:       lib
+  exposed-modules:      Network.HTTP.Client.Request.Modifiers
+  build-depends:        base >= 4.7 && < 4.8,
+                        bytestring,
+                        exceptions,
+                        http-client >= 0.2 && < 0.4,
+                        http-media >= 0.2 && < 0.3,
+                        http-types
+  if flag(network-uri)
+    build-depends:      network >= 2.6,
+                        network-uri >= 2.6
+  else
+    build-depends:      network < 2.6
+  default-language:     Haskell2010
+  default-extensions:   OverloadedStrings
+  ghc-options:          -Wall
