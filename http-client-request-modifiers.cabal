@@ -12,11 +12,16 @@ maintainer:             sean.leather@gmail.com
 category:               Network
 build-type:             Simple
 cabal-version:          >= 1.10
+homepage:               https://github.com/spl/http-client-request-modifiers
+bug-reports:            https://github.com/spl/http-client-request-modifiers/issues
+
+source-repository head
+  type:                 git
+  location:             https://github.com/spl/http-client-request-modifiers.git
 
 flag network-uri
-   description: Get Network.URI from the network-uri package
-   default: True
-
+  description:          Get Network.URI from the network-uri package
+  default:              True
 library
   hs-source-dirs:       lib
   exposed-modules:      Network.HTTP.Client.Request.Modifiers
