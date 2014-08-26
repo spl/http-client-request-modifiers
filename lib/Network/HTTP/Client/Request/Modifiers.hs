@@ -234,7 +234,8 @@ setBodyBS = setBody . RequestBodyBS
 setBodyLBS :: Monad m => LBS.ByteString -> Request -> m Request
 setBodyLBS = setBody . RequestBodyLBS
 
--- | Set the request body with URL-encoded key/value pairs.
+-- | Set the request body with URL-encoded key/value pairs, the method to
+-- @POST@, and the @Content-Type@ to @application/x-www-form-urlencoded@.
 --
 -- Since 0.1
 setUrlEncodedBody :: Monad m => [(BS.ByteString, BS.ByteString)] -> ReqMod m
