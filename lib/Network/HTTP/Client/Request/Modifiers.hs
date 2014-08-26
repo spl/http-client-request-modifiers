@@ -154,8 +154,6 @@ addQuery q req = setQuery (parseQuery (queryString req) ++ toQuery q) req
 -- | Add a single query key/value pair to the end of the query string.
 --
 -- Since 0.1
---
--- Since 0.1
 addQueryPair :: (Monad m, QueryKeyLike k, QueryValueLike v) => k -> v -> ReqMod m
 addQueryPair k v = addQuery [(toQueryKey k, toQueryValue v)]
 
