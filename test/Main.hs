@@ -4,7 +4,6 @@ module Main (main) where
 
 import Control.Arrow
 import Data.ByteString (ByteString)
-import Data.Default.Class (def)
 import Network.HTTP.Client
 import Network.HTTP.Media
 import Network.HTTP.Types
@@ -55,7 +54,7 @@ Just exampleUri = parseURI "http://host:1234/path?query=string"
 
 setUri_tests :: TestTree
 setUri_tests = testGroup "setUri"
-  [ testCase "URI matches expected values" $ return def
+  [ testCase "URI matches expected values" $ return defaultRequest
     >>= setUri exampleUri
     >>= match (\req ->
       not (secure req) && host req == "host" && port req == 1234
@@ -67,7 +66,7 @@ Just exampleRelativeUri = parseRelativeReference "newpath"
 
 setUriRelative_tests :: TestTree
 setUriRelative_tests = testGroup "setUriRelative"
-  [ testCase "URI matches expected values, new path" $ return def
+  [ testCase "URI matches expected values, new path" $ return defaultRequest
     >>= setUri exampleUri
     >>= setUriRelative exampleRelativeUri
     >>= match (\req ->
@@ -79,32 +78,32 @@ setUriRelative_tests = testGroup "setUriRelative"
 
 setQueryBS_tests :: TestTree
 setQueryBS_tests = testGroup "setQueryBS"
-  [ testCase "Query string matches expected value" $ return def
+  [ testCase "Query string matches expected value" $ return defaultRequest
     >>= setQueryBS "blah"
     >>= match (\req -> queryString req == "blah")
   ]
 
 setQuery_tests :: TestTree
 setQuery_tests = testGroup "setQuery"
-  [ testCase "Query string matches expected value" $ return def
+  [ testCase "Query string matches expected value" $ return defaultRequest
     >>= setQuery [("a" :: ByteString, Just "b" :: Maybe ByteString)]
     >>= match (\req -> queryString req == "?a=b")
   ]
 
 addQuery_tests :: TestTree
 addQuery_tests = testGroup "addQuery"
-  [ testCase "New query follows old" $ return def
+  [ testCase "New query follows old" $ return defaultRequest
     >>= setQueryBS "?a=b"
     >>= addQuery [("c" :: ByteString, Nothing :: Maybe ByteString)]
     >>= match (\req -> queryString req == "?a=b&c")
-  , testCase "New query is only query" $ return def
+  , testCase "New query is only query" $ return defaultRequest
     >>= addQuery [("a" :: ByteString, "b" :: ByteString)]
     >>= match (\req -> queryString req == "?a=b")
   ]
 
 addQueryPair_tests :: TestTree
 addQueryPair_tests = testGroup "addQueryPair"
-  [ testCase "Query string matches expected value" $ return def
+  [ testCase "Query string matches expected value" $ return defaultRequest
     >>= setQueryBS "?a=b"
     >>= addQueryPair ("c" :: ByteString) ("d" :: ByteString)
     >>= match (\req -> queryString req == "?a=b&c=d")
@@ -114,14 +113,14 @@ addQueryPair_tests = testGroup "addQueryPair"
 
 setMethodBS_tests :: TestTree
 setMethodBS_tests = testGroup "setMethodBS"
-  [ testCase "Method matches expected value" $ return def
+  [ testCase "Method matches expected value" $ return defaultRequest
     >>= setMethodBS "blah"
     >>= match (\req -> method req == "blah")
   ]
 
 setMethod_tests :: TestTree
 setMethod_tests = testGroup "setMethod"
-  [ testCase "Method matches expected value" $ return def
+  [ testCase "Method matches expected value" $ return defaultRequest
     >>= setMethod HEAD
     >>= match (\req -> method req == "HEAD")
   ]
@@ -133,17 +132,17 @@ exampleHeaders = [(hAcceptLanguage, "hello"), (hContentEncoding, "goodbye")]
 
 setHeaders_tests :: TestTree
 setHeaders_tests = testGroup "setHeaders"
-  [ testCase "Headers match expected values" $ return def
+  [ testCase "Headers match expected values" $ return defaultRequest
     >>= setHeaders exampleHeaders
     >>= match (\req -> requestHeaders req == exampleHeaders)
   ]
 
 setHeader_tests :: TestTree
 setHeader_tests = testGroup "setHeader"
-  [ testCase "Header matches expected value" $ return def
+  [ testCase "Header matches expected value" $ return defaultRequest
     >>= setHeader "myheader" "myheadervalue"
     >>= match (\req -> requestHeaders req == [("myheader", "myheadervalue")])
-  , testCase "New header replaces old" $ return def
+  , testCase "New header replaces old" $ return defaultRequest
     >>= setHeaders exampleHeaders
     >>= setHeader hAcceptLanguage "somethingElse"
     >>= match (\req -> requestHeaders req ==
@@ -152,10 +151,10 @@ setHeader_tests = testGroup "setHeader"
 
 addHeader_tests :: TestTree
 addHeader_tests = testGroup "addHeader"
-  [ testCase "New header matches expected value" $ return def
+  [ testCase "New header matches expected value" $ return defaultRequest
     >>= addHeader "myheader" "myheadervalue"
     >>= match (\req -> requestHeaders req == [("myheader", "myheadervalue")])
-  , testCase "New header follows old" $ return def
+  , testCase "New header follows old" $ return defaultRequest
     >>= setHeaders exampleHeaders
     >>= addHeader "myheader" "myheadervalue"
     >>= match (\req -> requestHeaders req == exampleHeaders
@@ -168,10 +167,10 @@ setXHeader_tests
   -> (forall m. Monad m => MediaType -> ReqMod m)
   -> TestTree
 setXHeader_tests name hdrName f = testGroup ("set" ++ name ++ "Header")
-  [ testCase "Header matches expected value" $ return def
+  [ testCase "Header matches expected value" $ return defaultRequest
     >>= f ("application" // "json")
     >>= match (\req -> requestHeaders req == [(hdrName, "application/json")])
-  , testCase "New header replaces old" $ return def
+  , testCase "New header replaces old" $ return defaultRequest
     >>= f ("application" // "json")
     >>= f ("text" // "html")
     >>= match (\req -> requestHeaders req == [(hdrName, "text/html")])
@@ -191,7 +190,7 @@ setAcceptHeader_tests = setXHeader_tests "Accept" hAccept setAcceptHeader
 
 setBodyBS_tests :: TestTree
 setBodyBS_tests = testGroup "setBodyBS"
-  [ testCase "Body matches expected value" $ return def
+  [ testCase "Body matches expected value" $ return defaultRequest
     >>= setBodyBS "mybody"
     >>= match (requestBody >>> \case
       RequestBodyBS body | body == "mybody" -> True
@@ -200,7 +199,7 @@ setBodyBS_tests = testGroup "setBodyBS"
 
 setBodyLBS_tests :: TestTree
 setBodyLBS_tests = testGroup "setBodyLBS"
-  [ testCase "Body matches expected value" $ return def
+  [ testCase "Body matches expected value" $ return defaultRequest
     >>= setBodyLBS "mybody"
     >>= match (requestBody >>> \case
       RequestBodyLBS body | body == "mybody" -> True
@@ -209,7 +208,7 @@ setBodyLBS_tests = testGroup "setBodyLBS"
 
 setUrlEncodedBody_tests :: TestTree
 setUrlEncodedBody_tests = testGroup "setUrlEncodedBody"
-  [ testCase "Request matches expected value" $ return def
+  [ testCase "Request matches expected value" $ return defaultRequest
     >>= setUrlEncodedBody [("a", "b"), ("c", " d")]
     >>= match (\req -> case requestBody req of
       RequestBodyLBS body | body == "a=b&c=%20d" ->
