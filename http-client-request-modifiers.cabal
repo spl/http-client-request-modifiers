@@ -1,5 +1,5 @@
 name:                   http-client-request-modifiers
-version:                0.1
+version:                0.2
 synopsis:               Convenient monadic HTTP request modifiers
 description:
   These are simple, monadic functions that modify an HTTP @Request@ from
@@ -22,24 +22,17 @@ source-repository head
   type:                 git
   location:             https://github.com/spl/http-client-request-modifiers.git
 
-flag network-uri
-  description:          Get Network.URI from the network-uri package
-  default:              True
-
 library
   hs-source-dirs:       lib
   exposed-modules:      Network.HTTP.Client.Request.Modifiers
-  build-depends:        base >= 4.7 && < 4.8,
+  build-depends:        base >= 4.7 && < 5,
                         bytestring,
                         exceptions,
-                        http-client >= 0.2 && < 0.4,
-                        http-media >= 0.2 && < 0.3,
-                        http-types
-  if flag(network-uri)
-    build-depends:      network >= 2.6,
-                        network-uri >= 2.6
-  else
-    build-depends:      network < 2.6
+                        http-client,
+                        http-media,
+                        http-types,
+                        network,
+                        network-uri
   default-language:     Haskell2010
   default-extensions:   OverloadedStrings
   ghc-options:          -Wall
@@ -48,20 +41,16 @@ test-suite test
   type:                 exitcode-stdio-1.0
   hs-source-dirs:       test
   main-is:              Main.hs
-  build-depends:        base >= 4.7 && < 4.8,
+  build-depends:        base >= 4.7 && < 5,
                         bytestring,
-                        data-default-class,
-                        tasty >= 0.8,
+                        tasty,
                         tasty-hunit,
                         http-client,
                         http-client-request-modifiers,
                         http-media,
-                        http-types
-  if flag(network-uri)
-    build-depends:      network >= 2.6,
-                        network-uri >= 2.6
-  else
-    build-depends:      network < 2.6
+                        http-types,
+                        network,
+                        network-uri
   default-language:     Haskell2010
   default-extensions:   OverloadedStrings
                         LambdaCase

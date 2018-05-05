@@ -99,16 +99,17 @@ module Network.HTTP.Client.Request.Modifiers (
 
 --------------------------------------------------------------------------------
 
-import Control.Monad
-import Control.Monad.Catch (MonadThrow)
-import qualified Data.ByteString as BS
-import qualified Data.ByteString.Lazy as LBS
-import Network.HTTP.Client
-import qualified Network.HTTP.Client.Internal as I
-import Network.HTTP.Media.MediaType
-import Network.HTTP.Types
-import Network.HTTP.Types.QueryLike
-import Network.URI (URI)
+import           Control.Monad
+import           Control.Monad.Catch             (MonadThrow)
+import qualified Data.ByteString                 as BS
+import qualified Data.ByteString.Lazy            as LBS
+import           Network.HTTP.Client
+import qualified Network.HTTP.Client.Internal    as I
+import           Network.HTTP.Media.MediaType
+import           Network.HTTP.Media.RenderHeader
+import           Network.HTTP.Types
+import           Network.HTTP.Types.QueryLike
+import           Network.URI                     (URI)
 
 --------------------------------------------------------------------------------
 
@@ -206,13 +207,13 @@ addHeader n v = addHeaders [(n, v)]
 --
 -- Since 0.1
 setContentTypeHeader :: Monad m => MediaType -> ReqMod m
-setContentTypeHeader = setHeader hContentType . toByteString
+setContentTypeHeader = setHeader hContentType . renderHeader
 
 -- | Set the @Accept@ header with a 'MediaType'.
 --
 -- Since 0.1
 setAcceptHeader :: Monad m => MediaType -> ReqMod m
-setAcceptHeader = setHeader hAccept . toByteString
+setAcceptHeader = setHeader hAccept . renderHeader
 
 --------------------------------------------------------------------------------
 
