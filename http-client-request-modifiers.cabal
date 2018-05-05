@@ -1,5 +1,5 @@
 name:                   http-client-request-modifiers
-version:                0.1
+version:                0.2
 synopsis:               Convenient monadic HTTP request modifiers
 description:
   These are simple, monadic functions that modify an HTTP @Request@ from
